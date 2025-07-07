@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Notes</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <h1>📝 AI Note App</h1>
+
+  <form id="noteForm">
+    <input type="text" name="title" id="title" placeholder="Note Title" required />
+    <textarea name="content" id="content" placeholder="Write your note..." required></textarea>
+    <button type="submit">Save Note</button>
+  </form>
+
+  <h2>📌 AI Summary</h2>
+  <div id="summaryCard" class="card">
+    <ul id="summaryList">
+      <li>No summary yet.</li>
+    </ul>
+  </div>
+
+  <script>
+    const form = document.getElementById('noteForm');
+    const summaryList = document.getElementById('summaryList');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = form.title.value;
+      const content = form.content.value;
+
+      summaryList.innerHTML = '<li>⏳ Saving note and generating summary...</li>';
+
+      try {
+        // Save the note
+        const res = await fetch('/api/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content })
+        });
+
+        if (!res.ok) throw new Error('Note not saved');
+        form.reset();
+
+        // Generate summary
+        const summarizeRes = await fetch('/api/summarize-notes', { method: 'POST' });
+        if (!summarizeRes.ok) throw new Error('Failed to summarize notes');
+
+        // Fetch summary
+        const summaryRes = await fetch('/api/summaries');
+        const data = await summaryRes.json();
+
+        // Clean and render summary as list
+        const summary = data?.Summary || '';
+        const points = summary
+          .split('\n')
+          .map(item => item.replace(/^\*\s*/, '').trim()) // remove "* "
+          .filter(item => item); // remove empty lines
+
+        summaryList.innerHTML = points.length
+          ? points.map(point => `<li>${point}</li>`).join('')
+          : '<li>No summary available.</li>';
+
+      } catch (err) {
+        console.error(err);
+        summaryList.innerHTML = '<li>❌ Error generating summary.</li>';
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+

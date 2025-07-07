@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    padding: 40px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  h1 {
+    color: #333;
+    text-align: center;
+  }
+  
+  form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #0055ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  button:hover {
+    background-color: #0041cc;
+  }
+
+  .card {
+    background: #f0f4ff;
+    border-left: 4px solid #4a90e2;
+    padding: 16px;
+    margin: 20px 0;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+.card h2 {
+    margin-top: 0;
+    color: #333;
+  }
+
+  .card p {
+    color: #555;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 20px;
+    }
+  
+    form {
+      padding: 15px;
+    }
+  
+    input, textarea, button {
+      font-size: 16px;
+    }
+  }  
+  
