@@ -14,7 +14,7 @@
     <button type="submit">Save Note</button>
   </form>
 
-  <h2>📌 AI Summary</h2>
+  <h2>📌 AI Summaries</h2>
   <div id="summaryCard" class="card">
     <ul id="summaryList">
       <li>No summary yet.</li>
@@ -43,33 +43,63 @@
         if (!res.ok) throw new Error('Note not saved');
         form.reset();
 
-        // Generate summary
+        // Generate summary from the latest note
         const summarizeRes = await fetch('/api/summarize-notes', { method: 'POST' });
         if (!summarizeRes.ok) throw new Error('Failed to summarize notes');
 
-        // Fetch summary
+        // Fetch all summaries
         const summaryRes = await fetch('/api/summaries');
-        const data = await summaryRes.json();
+        const summaries = await summaryRes.json();
 
-        // Clean and render summary as list
-        const summary = data?.Summary || '';
-        const points = summary
-          .split('\n')
-          .map(item => item.replace(/^\*\s*/, '').trim()) // remove "* "
-          .filter(item => item); // remove empty lines
+        summaryList.innerHTML = '';
 
-        summaryList.innerHTML = points.length
-          ? points.map(point => `<li>${point}</li>`).join('')
-          : '<li>No summary available.</li>';
+        const allSummaries = Array.isArray(summaries) ? summaries : [summaries];
+
+        if (allSummaries.length === 0) {
+          summaryList.innerHTML = '<li>No summaries yet.</li>';
+        } else {
+          allSummaries.forEach(summary => {
+            const li = document.createElement('li');
+            li.textContent = summary.Summary;
+            summaryList.appendChild(li);
+          });
+        }
 
       } catch (err) {
         console.error(err);
-        summaryList.innerHTML = '<li>❌ Error generating summary.</li>';
+        summaryList.innerHTML = '<li>❌ Error generating or fetching summary.</li>';
+      }
+    });
+
+    // Optional: Load existing summaries on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const summaryRes = await fetch('/api/summaries');
+        const summaries = await summaryRes.json();
+
+        summaryList.innerHTML = '';
+
+        const allSummaries = Array.isArray(summaries) ? summaries : [summaries];
+
+        if (allSummaries.length === 0) {
+          summaryList.innerHTML = '<li>No summaries yet.</li>';
+        } else {
+          allSummaries.forEach(summary => {
+            const li = document.createElement('li');
+            li.textContent = summary.Summary;
+            summaryList.appendChild(li);
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        summaryList.innerHTML = '<li>❌ Error loading summaries.</li>';
       }
     });
   </script>
 </body>
 </html>
+
+
 
 
 

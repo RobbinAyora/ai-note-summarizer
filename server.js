@@ -65,7 +65,7 @@ app.get('/api/notes', async (req, res) => {
 // ✅ Summarize notes using Gemini
 app.post('/api/summarize-notes', async (req, res) => {
   try {
-    const notes = await Note.find({}).sort({ createdAt: -1 }).limit(1);
+    const notes = await Note.find({}).sort({ createdAt: -1 }).limit(10);
 
     const fullText = notes.map(note => `Title: ${note.title}\nContent: ${note.content}`).join('\n\n');
 
@@ -98,7 +98,7 @@ const Summary = new mongoose.model( 'Summary', summarySchema);
 
 app.get('/api/summaries', async (req, res) => {
   try{
-  const Summaries = await Summary.findOne({}).sort({generatedAt: -1});
+  const Summaries = await Summary.find({}).sort({generatedAt: -1});
   res.json(Summaries);
 
   }catch(err){
